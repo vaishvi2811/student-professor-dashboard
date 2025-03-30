@@ -1,0 +1,121 @@
+/* Sidebar Styling */
+.sidebar {
+    width: 260px;
+    /* background-color: #483ae2; */
+    color: white;
+    text-decoration-color: white;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    background-color: #1F2937; 
+    color: white;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+
+  .logo-icon {
+    background-color: #4f46e5;
+    padding: 12px;
+    border-radius: 50%;
+  }
+  
+  .icon {
+    color: white;
+    font-size: 20px;
+  }
+  
+  .app-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-left: 12px;
+  }
+  
+  .main-nav {
+    flex: 1;
+  }
+  
+  .nav-item {
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    list-style-type: none;
+    cursor: pointer;
+    text-decoration: white;
+  }
+  
+  .nav-item:hover {
+    background-color: #4f46e5;
+  }
+  
+  .nav-item.active {
+    background-color: #312e81;
+  }
+  
+  .nav-link {
+    display: flex;
+    align-items: center;
+    text-decoration: white;
+    color: white;
+  }
+  
+  .nav-icon {
+    margin-right: an 12px;
+  }
+  
+  .user-profile {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid #4f46e5;
+  }
+  
+  .profile-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .profile-image {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+  }
+  
+  .profile-info {
+    margin-left: 12px;
+  }
+  
+  .profile-name {
+    font-weight: 500;
+  }
+  
+  .profile-dept {
+    font-size: 14px;
+    color: #c7d2fe;
+  }
+
+  /* Enhanced active tab styling */
+.nav-item.active {
+  background-color: #e0e7ff;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.nav-item.active .nav-icon {
+  color: #4f46e5;
+}
+
+.nav-item.active .nav-link {
+  color: #4338ca;
+}
+
+/* Smooth transition for tabs */
+.nav-item {
+  transition: background-color 0.2s;
+}
+
+.nav-link, .nav-icon {
+  transition: color 0.2s;
+}
