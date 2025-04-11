@@ -5,11 +5,6 @@ import {Student, Professor} from "../models/user.model.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-// Function to check email domain
-const isValidVJTIEmail = (email) => {
-    return validator.isEmail(email) && email.endsWith('vjti.ac.in');
-};
-
 
 // Function to check if the first 2 digits of RollNum match the email prefix
 const isValidRollNum = (email, rollNum) => {
@@ -28,12 +23,8 @@ const isStrongPassword = (password) => {
 
 const signup = async(req, res) => {
     try {
-        const { name, email, rollNum, password } = req.body;
+        const { name, email, rollNum, password, class:studentClass } = req.body;
 
-        // Validate email
-        if (!isValidVJTIEmail(email)) {
-            return res.status(400).json({ message: 'Invalid email. Use your @vjti.ac.in email.' });
-        }
 
         // Validate Roll Number
         if (!isValidRollNum(email, rollNum)) {
@@ -43,6 +34,11 @@ const signup = async(req, res) => {
         // Validate password strength
         if (!isStrongPassword(password)) {
             return res.status(400).json({ message: 'Weak password! Must contain 8+ chars, 1 uppercase, 1 lowercase, 1 number, and 1 special character.' });
+        }
+
+        // Validate class fields
+        if (!studentClass || !studentClass.branch || !studentClass.sem) {
+            return res.status(400).json({ message: 'class.branch and class.sem are required.' });
         }
 
         // Check if user already exists
@@ -60,7 +56,8 @@ const signup = async(req, res) => {
             name,
             email,
             rollNum,
-            password: hashedPassword
+            password: hashedPassword,
+            class: studentClass
         });
 
         // Save user to database
