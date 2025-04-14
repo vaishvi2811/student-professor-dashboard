@@ -3,6 +3,7 @@ import { signup, login, logout } from '../controllers/auth.controller.js';
 import { createAchievement, getAchievements, updateAchievement, deleteAchievement } from '../controllers/achievement.controller.js';
 import { professorSignup, professorLogin } from '../controllers/auth.controller.js';
 import authenticateUser from '../middlewares/auth.middleware.js';
+import { getUserDetails } from '../controllers/user.controller.js';
 
 const router = express.Router();
 
@@ -22,5 +23,8 @@ router.delete("/delete-achievement/:achievementId", authenticateUser, deleteAchi
 // Professor Authentication Routes
 router.post("/professor/signup", professorSignup);
 router.post("/professor/login", professorLogin);
+
+//Routes for Dashboard data
+router.get('/dashboard', authenticateUser, getUserDetails)
 
 export default router;

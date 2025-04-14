@@ -1,33 +1,55 @@
-import jwt from "jsonwebtoken";
-import { Student } from "../models/user.model.js";
-import dotenv from "dotenv";
-
-dotenv.config();
+import { Student, Achievement, Course, Committee, Professor } from "../models/user.model.js";
 
 const getUserDetails = async (req, res) => {
   try {
-    // Extract the token from the Authorization header
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Unauthorized. Token is missing." });
-    }
+    const studentId = req.user.studentId;
 
-    const token = authHeader.split(" ")[1];
+    const student = await Student.findById(studentId)
+      .populate({
+        path: 'enrolledCourses',
+        populate: { path: 'teacher', model: 'Professor' }
+      })
+      .populate('achievements')
+      .populate({
+        path: 'enrolledCommitties',
+        populate: {
+          path: 'members.user',
+          model: 'Student'
+        }
+      });
 
-    // Verify the token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (!decoded || !decoded.studentId) {
-      return res.status(401).json({ message: "Unauthorized. Invalid token." });
-    }
-
-    // Find the student by ID
-    const student = await Student.findById(decoded.studentId).select("-password"); // Exclude the password field
     if (!student) {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // Send the student details as the response
-    res.status(200).json(student);
+    const response = {
+      name: student.name,
+      department: student.class.branch,
+      sem: student.class.sem.toString(),
+      courses: student.enrolledCourses.map((course, idx) => ({
+        id: idx + 1,
+        code: course._id.toString().slice(-5).toUpperCase(), // mock code
+        name: course.name,
+        professor: course.teacher?.name || "TBA",
+        grade: "A-" // Placeholder
+      })),
+      achievements: student.achievements.map((ach, idx) => ({
+        id: idx + 1,
+        title: ach.title,
+        date: new Date(ach.dateReceived).toLocaleDateString("en-US", { month: "short", year: "numeric" }),
+        description: ach.description
+      })),
+      committees: student.enrolledCommitties.map((com, idx) => {
+        const membership = com.members.find(m => m.user._id.toString() === student._id.toString());
+        return {
+          id: idx + 1,
+          name: com.name,
+          role: membership?.role || "Member"
+        };
+      })
+    };
+
+    res.status(200).json(response);
   } catch (error) {
     console.error("Error fetching user details:", error);
     res.status(500).json({ message: "Internal Server Error" });

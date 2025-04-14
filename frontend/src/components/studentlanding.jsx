@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiHome, FiBook, FiAward, FiUsers, FiMail, FiCalendar, FiBell, FiUser } from 'react-icons/fi';
 import './studentlanding.css';
 import './sidebar.css';
@@ -6,89 +6,81 @@ import './dashboard.css';
 
 function StudentLanding() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  
-  // Mock data
-  const studentData = {
-    name: "Alex Johnson",
-    department: "Computer Science",
-    year: "Junior",
-    gpa: "3.8",
-    avatar: "/api/placeholder/100/100",
-    courses: [
-      { id: 1, code: "CS301", name: "Database Management Systems", professor: "Dr. Sarah Chen", grade: "A-" },
-      { id: 2, code: "CS302", name: "Web Development", professor: "Dr. Michael Rodriguez", grade: "A" },
-      { id: 3, code: "CS401", name: "Artificial Intelligence", professor: "Dr. James Wilson", grade: "B+" },
-    ],
-    achievements: [
-      { id: 1, title: "Hackathon Winner", date: "Nov 2024", description: "First place in University Hackathon" },
-      { id: 2, title: "Dean's List", date: "Fall 2024", description: "Academic Excellence" },
-      { id: 3, title: "Best Project Award", date: "Oct 2024", description: "For Mobile App Development course" },
-    ],
-    committees: [
-      { id: 1, name: "Student Council", role: "Technical Officer" },
-      { id: 2, name: "CS Department Committee", role: "Student Representative" },
-    ],
-    upcomingDeadlines: [
-      { id: 1, title: "DBMS Project Submission", course: "CS301", date: "April 15, 2025" },
-      { id: 2, title: "AI Research Paper", course: "CS401", date: "April 10, 2025" },
-    ]
-  };
+  const [studentData, setStudentData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/v1/auth/dashboard", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch student data");
+        const data = await response.json();
+
+        // Convert sem to academic year label
+        const yearMap = {
+          "1": "Freshman", "2": "Freshman",
+          "3": "Sophomore", "4": "Sophomore",
+          "5": "Junior", "6": "Junior",
+          "7": "Senior", "8": "Senior",
+        };
+
+        setStudentData({
+          ...data,
+          year: yearMap[data.sem] || "Unknown",
+          gpa: "3.8", // Static for now
+          avatar: "/api/placeholder/100/100",
+          upcomingDeadlines: [], // Add if you integrate assignments
+        });
+
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setLoading(false);
+      }
+    };
+
+    fetchStudentData();
+  }, []);
+
+  if (loading || !studentData) {
+    return <div className="loading">Loading student dashboard...</div>;
+  }
 
   return (
     <div className="app-container">
       {/* Sidebar */}
       <div className="sidebar">
         <div className="logo-container">
-          <div className="logo-icon">
-            <FiUser className="icon" />
-          </div>
+          <div className="logo-icon"><FiUser className="icon" /></div>
           <h1 className="app-title">StudentHub</h1>
         </div>
-        
         <nav className="main-nav">
           <ul>
-            <li className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
-                onClick={() => setActiveTab('dashboard')}>
-              <a href="#" className="nav-link">
-                <FiHome className="nav-icon" /> Dashboard
-              </a>
-            </li>
-            <li className={`nav-item ${activeTab === 'courses' ? 'active' : ''}`}
-                onClick={() => setActiveTab('courses')}>
-              <a href="#" className="nav-link">
-                <FiBook className="nav-icon" /> Courses
-              </a>
-            </li>
-            <li className={`nav-item ${activeTab === 'achievements' ? 'active' : ''}`}
-                onClick={() => setActiveTab('achievements')}>
-              <a href="#" className="nav-link">
-                <FiAward className="nav-icon" /> Achievements
-              </a>
-            </li>
-            <li className={`nav-item ${activeTab === 'committees' ? 'active' : ''}`}
-                onClick={() => setActiveTab('committees')}>
-              <a href="#" className="nav-link">
-                <FiUsers className="nav-icon" /> Committees
-              </a>
-            </li>
-            <li className={`nav-item ${activeTab === 'messages' ? 'active' : ''}`}
-                onClick={() => setActiveTab('messages')}>
-              <a href="#" className="nav-link">
-                <FiMail className="nav-icon" /> Messages
-              </a>
-            </li>
-            <li className={`nav-item ${activeTab === 'calendar' ? 'active' : ''}`}
-                onClick={() => setActiveTab('calendar')}>
-              <a href="#" className="nav-link">
-                <FiCalendar className="nav-icon" /> Calendar
-              </a>
-            </li>
+            {["dashboard", "courses", "achievements", "committees", "messages", "calendar"].map(tab => (
+              <li key={tab} className={`nav-item ${activeTab === tab ? 'active' : ''}`}
+                  onClick={() => setActiveTab(tab)}>
+                <a href="#" className="nav-link">
+                  {{
+                    dashboard: <FiHome />,
+                    courses: <FiBook />,
+                    achievements: <FiAward />,
+                    committees: <FiUsers />,
+                    messages: <FiMail />,
+                    calendar: <FiCalendar />
+                  }[tab]} {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </a>
+              </li>
+            ))}
           </ul>
         </nav>
-
         <div className="user-profile">
           <div className="profile-container">
-            <img src="/api/placeholder/40/40" className="profile-image" alt="Profile" />
+            <img src={studentData.avatar} className="profile-image" alt="Profile" />
             <div className="profile-info">
               <p className="profile-name">{studentData.name}</p>
               <p className="profile-dept">{studentData.department}</p>
@@ -99,28 +91,21 @@ function StudentLanding() {
 
       {/* Main Content */}
       <div className="main-content">
-        {/* Header */}
         <header className="header">
           <h2 className="header-title">Student Dashboard</h2>
           <div className="header-actions">
-            <button className="action-button">
-              <FiBell className="action-icon" />
-            </button>
+            <button className="action-button"><FiBell className="action-icon" /></button>
             <div className="notification-container">
               <span className="notification-badge">3</span>
-              <button className="action-button">
-                <FiMail className="action-icon" />
-              </button>
+              <button className="action-button"><FiMail className="action-icon" /></button>
             </div>
           </div>
         </header>
 
-        {/* Content */}
         <main className="main-container">
-          {/* Welcome Section */}
           <div className="welcome-section">
             <div className="welcome-content">
-              <img src="/api/placeholder/100/100" alt="Profile" className="welcome-profile-image" />
+              <img src={studentData.avatar} alt="Profile" className="welcome-profile-image" />
               <div className="welcome-text">
                 <h1 className="welcome-name">{studentData.name}</h1>
                 <p className="welcome-info">{studentData.department} • {studentData.year}</p>
@@ -131,11 +116,9 @@ function StudentLanding() {
 
           {/* Dashboard Grid */}
           <div className="dashboard-grid">
-            {/* Current Courses */}
+            {/* Courses */}
             <div className="dashboard-card courses-card">
-              <h2 className="card-title">
-                <FiBook className="card-icon" /> Current Courses
-              </h2>
+              <h2 className="card-title"><FiBook className="card-icon" /> Current Courses</h2>
               <div className="table-container">
                 <table className="data-table">
                   <thead>
@@ -155,11 +138,7 @@ function StudentLanding() {
                           </div>
                         </td>
                         <td className="professor">{course.professor}</td>
-                        <td>
-                          <span className="grade-badge">
-                            {course.grade}
-                          </span>
-                        </td>
+                        <td><span className="grade-badge">{course.grade}</span></td>
                       </tr>
                     ))}
                   </tbody>
@@ -167,11 +146,9 @@ function StudentLanding() {
               </div>
             </div>
 
-            {/* Recent Achievements */}
+            {/* Achievements */}
             <div className="dashboard-card achievements-card">
-              <h2 className="card-title">
-                <FiAward className="card-icon" /> Recent Achievements
-              </h2>
+              <h2 className="card-title"><FiAward className="card-icon" /> Recent Achievements</h2>
               <div className="achievements-list">
                 {studentData.achievements.map(achievement => (
                   <div key={achievement.id} className="achievement-item">
@@ -183,17 +160,13 @@ function StudentLanding() {
               </div>
             </div>
 
-            {/* Committee Involvements */}
+            {/* Committees */}
             <div className="dashboard-card committees-card">
-              <h2 className="card-title">
-                <FiUsers className="card-icon" /> Committee Roles
-              </h2>
+              <h2 className="card-title"><FiUsers className="card-icon" /> Committee Roles</h2>
               <div className="committees-list">
                 {studentData.committees.map(committee => (
                   <div key={committee.id} className="committee-item">
-                    <div className="committee-icon-container">
-                      <FiUsers className="committee-icon" />
-                    </div>
+                    <div className="committee-icon-container"><FiUsers className="committee-icon" /></div>
                     <div className="committee-info">
                       <div className="committee-name">{committee.name}</div>
                       <div className="committee-role">{committee.role}</div>
@@ -203,23 +176,23 @@ function StudentLanding() {
               </div>
             </div>
 
-            {/* Upcoming Deadlines */}
+            {/* Upcoming Deadlines (empty for now) */}
             <div className="dashboard-card deadlines-card">
-              <h2 className="card-title">
-                <FiCalendar className="card-icon" /> Upcoming Deadlines
-              </h2>
+              <h2 className="card-title"><FiCalendar className="card-icon" /> Upcoming Deadlines</h2>
               <div className="deadlines-list">
-                {studentData.upcomingDeadlines.map(deadline => (
-                  <div key={deadline.id} className="deadline-item">
-                    <div className="deadline-info">
-                      <div className="deadline-title">{deadline.title}</div>
-                      <div className="deadline-course">{deadline.course}</div>
+                {studentData.upcomingDeadlines.length > 0 ? (
+                  studentData.upcomingDeadlines.map(deadline => (
+                    <div key={deadline.id} className="deadline-item">
+                      <div className="deadline-info">
+                        <div className="deadline-title">{deadline.title}</div>
+                        <div className="deadline-course">{deadline.course}</div>
+                      </div>
+                      <div className="deadline-date">{deadline.date}</div>
                     </div>
-                    <div className="deadline-date">
-                      {deadline.date}
-                    </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="no-deadlines">No upcoming deadlines</p>
+                )}
               </div>
             </div>
           </div>

@@ -36,7 +36,7 @@ const studentSchema = new mongoose.Schema({
         { type: mongoose.Schema.Types.ObjectId, ref: 'Course' }
     ],
     enrolledCommitties: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Committy' }
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Committee' }
     ],
     class: { // New attribute
         sem: { type: Number, required: true }, // Semester
