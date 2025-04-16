@@ -127,7 +127,7 @@ const login = async (req, res) => {
 // Professor Signup
 const professorSignup = async (req, res) => {
     try {
-        const { name, email, password, department, contactNumber } = req.body;
+        const { name, email, password, department } = req.body;
 
         // Check if all required fields are provided
         if (!name || !email || !password || !department) {
@@ -199,8 +199,7 @@ const professorLogin = async (req, res) => {
     }
 };
 
-
-
+// Logout function (for both students and professors)
 const logout = async(req, res) => {
     res.send("logout route");
 }

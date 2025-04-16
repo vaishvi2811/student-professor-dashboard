@@ -3,7 +3,8 @@ import { signup, login, logout } from '../controllers/auth.controller.js';
 import { createAchievement, getAchievements, updateAchievement, deleteAchievement } from '../controllers/achievement.controller.js';
 import { professorSignup, professorLogin } from '../controllers/auth.controller.js';
 import authenticateUser from '../middlewares/auth.middleware.js';
-import { getUserDetails } from '../controllers/user.controller.js';
+import { getUserDetails, uploadProfilePicture } from '../controllers/user.controller.js';
+import upload from '../middlewares/upload.middleware.js'; // Assuming you have a middleware for handling file uploads
 
 const router = express.Router();
 
@@ -26,5 +27,8 @@ router.post("/professor/login", professorLogin);
 
 //Routes for Dashboard data
 router.get('/dashboard', authenticateUser, getUserDetails)
+
+//Route to upload profile picture
+router.put('/upload-profile-picture', authenticateUser, upload.single('profilePicture'), uploadProfilePicture);
 
 export default router;

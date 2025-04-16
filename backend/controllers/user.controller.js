@@ -56,4 +56,26 @@ const getUserDetails = async (req, res) => {
   }
 };
 
-export { getUserDetails };
+const uploadProfilePicture = async (req, res) => {
+  try {
+    const studentId = req.user.id; // assuming auth middleware sets req.user
+    const imageUrl = req.file.path; // multer + cloudinary gives image URL
+
+    const student = await Student.findByIdAndUpdate(
+      studentId,
+      { profilePicture: imageUrl },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: 'Profile picture updated successfully',
+      profilePicture: imageUrl,
+      student,
+    });
+  } catch (error) {
+    console.error('Error uploading profile picture:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export { getUserDetails, uploadProfilePicture };
