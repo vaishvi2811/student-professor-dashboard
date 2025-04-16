@@ -67,15 +67,11 @@ const ProfessorSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
-    bannerImg: {
-        type: String,
-        default: "",
-    },
     about: {
         type: String,
         default: "",
     },
-    skills: [
+    expertise: [
         { type: String }
     ],
     coursesTaught: [
@@ -87,10 +83,6 @@ const ProfessorSchema = new mongoose.Schema({
     },
     officeHours: {
         type: String, // Example: "Mon-Fri, 2 PM - 4 PM"
-        default: "",
-    },
-    contactNumber: {
-        type: String,
         default: "",
     },
 }, {
