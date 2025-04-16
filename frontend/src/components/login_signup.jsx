@@ -7,11 +7,8 @@ const LoginSignup = () => {
   // State for form tabs
   const [activeTab, setActiveTab] = useState('login');
   const navigate = useNavigate();
-  
-
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 
-  
   // Login form state
   const [loginData, setLoginData] = useState({
     email: '',

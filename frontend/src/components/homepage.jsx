@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FiUser, FiBookOpen, FiClipboard, FiBarChart2, FiCalendar, FiMessageCircle } from 'react-icons/fi';
 import './homepage.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 
 function HomePage() {
