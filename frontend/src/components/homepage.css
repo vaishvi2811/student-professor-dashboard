@@ -30,7 +30,7 @@ body {
   z-index: 100;
 }
 
-.logo-section {
+/* .logo-section {
   display: flex;
   align-items: center;
 }
@@ -55,6 +55,36 @@ body {
   font-weight: 700;
   margin-left: 0.75rem;
   color: #4338ca;
+} */
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  /* background-color: white; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 20px;
+  border-radius: 50%;
+  background-color: #5b21b6; /* a vibrant purple */
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #4f46e5; /* a rich indigo that pops against blue */
 }
 
 .header-nav {
