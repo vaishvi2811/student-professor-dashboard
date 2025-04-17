@@ -26,12 +26,18 @@ const getUserDetails = async (req, res) => {
     // Fetch projects where the student is a contributor
     const projects = await Project.find({ contributors: studentId }).populate("contributors", "name email");
 
+    // Fetch courses that match the student's class
+    const matchingCourses = await Course.find({
+      "class.branch": student.class.branch,
+      "class.sem": student.class.sem,
+    }).populate("teacher", "name email");
+
     const response = {
       name: student.name,
       department: student.class.branch,
       sem: student.class.sem.toString(),
-      courses: student.enrolledCourses.map((course, idx) => ({
-        id: idx + 1,
+      courses: matchingCourses.map((course, idx) => ({
+        id: course._id,
         code: course._id.toString().slice(-5).toUpperCase(), // mock code
         name: course.name,
         professor: course.teacher?.name || "TBA",
