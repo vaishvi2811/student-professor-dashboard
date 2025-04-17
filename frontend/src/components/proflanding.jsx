@@ -449,6 +449,7 @@ import {
 import './proflanding.css' ; 
 import './sidebar.css' ; 
 import './dashboard.css' ; 
+import CoursesPage from './profCoursePage';
 
 function ProfessorLanding() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -610,6 +611,9 @@ function ProfessorLanding() {
               </div>
             </>
           )}
+
+          {activeTab === 'courses' && <CoursesPage />}
+
           {/* Future Tabs like Messages, Calendar, etc. can be rendered conditionally here */}
         </main>
       </div>

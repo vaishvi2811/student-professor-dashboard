@@ -80,6 +80,16 @@ const ProfessorSchema = new mongoose.Schema({
     coursesTaught: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'Course' } // References courses taught by the professor
     ],
+    studentsSupervised: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Student' }
+    ],
+    research: [
+        {
+          title: String,
+          date: String,
+          journal: String
+        }
+      ],
     department: {
         type: String,
         required: true, // Example: "Computer Science", "Mechanical", etc.
