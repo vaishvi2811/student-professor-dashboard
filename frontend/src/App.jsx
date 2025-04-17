@@ -38,7 +38,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./components/homepage";
 import LoginSignup from "./components/studentLogin_signup";
 import ProfessorLogin from "./components/professorLogin";
-import StudentLanding from "./components/studentlanding2";
+import StudentLanding from "./components/studentlanding";
 import ProfessorLanding from "./components/proflanding";
 
 // ProtectedRoute Component

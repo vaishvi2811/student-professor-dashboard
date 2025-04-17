@@ -1,9 +1,10 @@
-import { Student, Achievement, Course, Committee, Professor } from "../models/user.model.js";
+import { Student, Achievement, Course, Committee, Professor, Project } from "../models/user.model.js";
 
 const getUserDetails = async (req, res) => {
   try {
     const studentId = req.user.studentId;
 
+    // Fetch the student details
     const student = await Student.findById(studentId)
       .populate({
         path: 'enrolledCourses',
@@ -22,6 +23,9 @@ const getUserDetails = async (req, res) => {
       return res.status(404).json({ message: "User not found." });
     }
 
+    // Fetch projects where the student is a contributor
+    const projects = await Project.find({ contributors: studentId }).populate("contributors", "name email");
+
     const response = {
       name: student.name,
       department: student.class.branch,
@@ -38,6 +42,14 @@ const getUserDetails = async (req, res) => {
         title: ach.title,
         date: new Date(ach.dateReceived).toLocaleDateString("en-US", { month: "short", year: "numeric" }),
         description: ach.description
+      })),
+      projects: projects.map((proj, idx) => ({
+        id: proj._id,
+        name: proj.name,
+        startDate: new Date(proj.startDate).toLocaleDateString(),
+        endDate: new Date(proj.endDate).toLocaleDateString(),
+        description: proj.description,
+        contributors: proj.contributors.map(c => ({ name: c.name, email: c.email }))
       })),
       committees: student.enrolledCommitties.map((com, idx) => {
         const membership = com.members.find(m => m.user._id.toString() === student._id.toString());
@@ -78,4 +90,24 @@ const uploadProfilePicture = async (req, res) => {
   }
 };
 
-export { getUserDetails, uploadProfilePicture };
+// Search students by name
+const searchStudents = async (req, res) => {
+  try {
+    const nameQuery = req.query.name;
+    if (!nameQuery) {
+      return res.status(400).json({ message: "Name query is required" });
+    }
+
+    const students = await Student.find({
+      name: { $regex: nameQuery, $options: 'i' }, // case-insensitive
+    }).select("name _id email"); // select fields you want to show
+
+    res.status(200).json({ students });
+  } catch (error) {
+    console.error("Error searching students:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+export { getUserDetails, uploadProfilePicture, searchStudents };

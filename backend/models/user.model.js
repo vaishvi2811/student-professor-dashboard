@@ -29,6 +29,9 @@ const studentSchema = new mongoose.Schema({
     skills: [
         { type: String }
     ],
+    projects: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Project' } // References projects created by the student
+    ],
     achievements: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'Achievement' }
     ],
@@ -136,6 +139,33 @@ const EventSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
+const ProjectSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true, // Project name is mandatory
+    },
+    startDate: {
+        type: Date,
+        required: true, // Start date is mandatory
+    },
+    endDate: {
+        type: Date,
+        required: true, // End date is mandatory
+    },
+    description: {
+        type: String,
+        default: "", // Optional description of the project
+    },
+    contributors: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Student", // References the Student model
+        },
+    ],
+}, {
+    timestamps: true, // Automatically adds createdAt and updatedAt fields
+});
+
 
 
 
@@ -146,5 +176,6 @@ const Course = mongoose.model("Course", CourseSchema);
 const Achievement = mongoose.model("Achievement", AchievementSchema);   
 const Student = mongoose.model("Student", studentSchema);
 const Professor = mongoose.model("Professor", ProfessorSchema);
+const Project = mongoose.model("Project", ProjectSchema);
 
-export { Student, Achievement, Course, Committee, Event, Professor };
+export { Student, Achievement, Course, Committee, Event, Professor, Project };
