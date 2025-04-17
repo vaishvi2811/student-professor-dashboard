@@ -150,7 +150,6 @@ const professorSignup = async (req, res) => {
             email,
             password: hashedPassword,
             department,
-            contactNumber,
         });
 
         // Save the professor to the database
@@ -187,10 +186,10 @@ const professorLogin = async (req, res) => {
 
         // Generate a JWT token
         const token = jwt.sign(
-            { professorId: professor._id, email: professor.email },
+            { id: professor._id, role: "professor" },
             process.env.JWT_SECRET,
             { expiresIn: "1h" }
-        );
+          );
 
         res.status(200).json({ message: "Login successful", token });
     } catch (error) {

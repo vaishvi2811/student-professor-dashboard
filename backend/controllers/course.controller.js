@@ -2,6 +2,7 @@ import { Course, Professor } from '../models/user.model.js';
 const createCourse = async (req, res) => {
   try {
     const professorId = req.user.id;
+    console.log('Professor ID:', professorId); // Log the professor ID for debugging
 
     const { name, description, class: courseClass } = req.body;
 
@@ -28,5 +29,6 @@ const createCourse = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 export { createCourse };

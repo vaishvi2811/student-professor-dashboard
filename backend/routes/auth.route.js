@@ -3,7 +3,7 @@ import { signup, login, logout } from '../controllers/auth.controller.js';
 import { createAchievement, getAchievements, updateAchievement, deleteAchievement } from '../controllers/achievement.controller.js';
 import { professorSignup, professorLogin } from '../controllers/auth.controller.js';
 import authenticateUser from '../middlewares/auth.middleware.js';
-import { getUserDetails, searchStudents, uploadProfilePicture } from '../controllers/user.controller.js';
+import { getUserDetails, searchStudents, uploadProfilePicture, getProfessorDashboard, searchProfessor } from '../controllers/user.controller.js';
 import upload from '../middlewares/upload.middleware.js'; // Assuming you have a middleware for handling file uploads
 import authenticateProfessor from '../middlewares/professorAuth.middleware.js';
 import { createCourse } from '../controllers/course.controller.js';
@@ -52,5 +52,9 @@ router.put('/update-project/:projectId', authenticateUser, updateProject);
 // Delete a project
 router.delete('/delete-project/:projectId', authenticateUser, deleteProject); // Route to delete a project by IDid', authenticateUser, deleteProject);
 
+//Route to fetch professor details
+router.get('/professor-dashboard', authenticateProfessor, getProfessorDashboard);
 
+//Route to search professors
+router.get('/search-professor', searchProfessor);
 export default router;

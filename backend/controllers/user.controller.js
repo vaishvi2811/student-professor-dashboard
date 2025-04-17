@@ -109,5 +109,64 @@ const searchStudents = async (req, res) => {
   }
 };
 
+// Fetch professor dashboard details
+const getProfessorDashboard = async (req, res) => {
+  try {
+    const professorId = req.user.id;
 
-export { getUserDetails, uploadProfilePicture, searchStudents };
+    const professor = await Professor.findById(professorId)
+      .populate({
+        path: 'coursesTaught',
+        model: Course,
+        select: 'code name semester',
+      })
+      .populate({
+        path: 'studentsSupervised',
+        model: Student,
+        select: 'name projectTitle',
+      });
+
+    if (!professor) {
+      return res.status(404).json({ message: 'Professor not found' });
+    }
+
+    res.status(200).json({
+      name: professor.name,
+      email: professor.email,
+      department: professor.department,
+      about: professor.about,
+      expertise: professor.expertise,
+      officeHours: professor.officeHours,
+      profilePicture: professor.profilePicture,
+      courses: professor.coursesTaught,
+      students: professor.studentsSupervised,
+      research: professor.research,
+    });
+  } catch (error) {
+    console.error('Error fetching professor dashboard:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Search professors by name
+const searchProfessor = async (req, res) => {
+  try {
+    const nameQuery = req.query.name;
+    if (!nameQuery) {
+      return res.status(400).json({ message: "Name query is required" });
+    }
+
+    const professors = await Professor.find({
+      name: { $regex: nameQuery, $options: 'i' }, // case-insensitive search
+    }).select("name _id email department"); // select fields to return
+
+    res.status(200).json({ professors });
+  } catch (error) {
+    console.error("Error searching professors:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+export { getUserDetails, uploadProfilePicture, searchStudents, getProfessorDashboard, searchProfessor };
