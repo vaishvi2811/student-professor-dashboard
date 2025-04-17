@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FiHome, FiBook, FiAward, FiUsers, FiMail, FiCalendar, FiBell, FiUser } from 'react-icons/fi';
 import AchievementsPage from './achievements';
 import ProjectsPage from './projects';
+import CommitteesPage from './committees';
 import './studentlanding.css';
 import './sidebar.css';
 import './dashboard.css';
@@ -73,7 +74,7 @@ function StudentLanding() {
                     }
                     setActiveTab(tab);
                   }}>
-                <a href="#" className="nav-link">
+                {/* <a href="#" className="nav-link">
                   {{
                     dashboard: <FiHome />,
                     courses: <FiBook />,
@@ -83,7 +84,23 @@ function StudentLanding() {
                     messages: <FiMail />,
                     calendar: <FiCalendar />
                   }[tab]} {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </a>
+                </a> */}
+
+              <a href="#" className="nav-link">
+                <span className="nav-icon">
+                  {{
+                    dashboard: <FiHome />,
+                    courses: <FiBook />,
+                    achievements: <FiAward />,
+                    committees: <FiUsers />,
+                    projects: <FiCalendar />,
+                    messages: <FiMail />,
+                    calendar: <FiCalendar />
+                  }[tab]}
+                </span>
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </a>
+
               </li>
             ))}
           </ul>
@@ -172,25 +189,60 @@ function StudentLanding() {
                     ))}
                   </div>
                 </div>
+                
 
-                {/* Committees */}
-                <div className="dashboard-card committees-card">
+                {/* Committees (Styled like Achievements) */}
+                {/* <div className="dashboard-card achievements-card">
                   <h2 className="card-title"><FiUsers className="card-icon" /> Committee Roles</h2>
-                  <div className="committees-list">
+                  <div className="achievements-list">
                     {studentData.committees?.map(committee => (
-                      <div key={committee.id} className="committee-item">
-                        <div className="committee-icon-container"><FiUsers className="committee-icon" /></div>
-                        <div className="committee-info">
-                          <div className="committee-name">{committee.name}</div>
-                          <div className="committee-role">{committee.role}</div>
-                        </div>
+                      <div key={committee.id} className="achievement-item">
+                        <div className="achievement-title">{committee.name}</div>
+                        <div className="achievement-date">{committee.duration}</div>
+                        <div className="achievement-desc">{committee.position}</div>
                       </div>
                     ))}
                   </div>
-                </div>
+                </div> */}
+
+                {/* Committees (Styled like Achievements) */}
+                  <div className="dashboard-card achievements-card">
+                    <h2 className="card-title">
+                      <FiUsers className="card-icon" /> Committee Roles
+                    </h2>
+                    <div className="achievements-list">
+                      {/* Hardcoded committees */}
+                      {[
+                        {
+                          id: 1,
+                          name: 'CSI VJTI',
+                          duration: 'Aug 2023 - Present',
+                          position: 'Executive Member',
+                        },
+                        {
+                          id: 2,
+                          name: 'IEEE VJTI',
+                          duration: 'July 2022 - June 2023',
+                          position: 'Design Head',
+                        },
+                        {
+                          id: 3,
+                          name: 'GDSC VJTI',
+                          duration: 'Aug 2022 - May 2023',
+                          position: 'Web Development Lead',
+                        },
+                      ].map((committee) => (
+                        <div key={committee.id} className="achievement-item">
+                          <div className="achievement-title">{committee.name}</div>
+                          <div className="achievement-date">{committee.duration}</div>
+                          <div className="achievement-desc">{committee.position}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
                 {/* Projects */}
-                <div className="dashboard-card projects-card">
+               <div className="dashboard-card projects-card">
                   <h2 className="card-title"><FiCalendar className="card-icon" /> Projects</h2>
                   <div className="projects-list">
                     {studentData.projects?.map(project => (
@@ -208,12 +260,35 @@ function StudentLanding() {
                   </div>
                 </div>
 
+                {/* Projects */}
+                {/* <div className="dashboard-card projects-card">
+                  <h2 className="card-title"><FiCalendar className="card-icon" /> Ongoing Projects</h2>
+                  <div className="projects-list">
+                    {studentData.projects && studentData.projects.length > 0 ? (
+                      studentData.projects.map((project) => (
+                        <div key={project._id} className="project-item">
+                          <div className="project-title">{project.name}</div>
+                          <div className="project-dates">
+                            {new Date(project.startDate).toLocaleDateString()} – {new Date(project.endDate).toLocaleDateString()}
+                          </div>
+                          <div className="project-desc">{project.description}</div>
+                          <div className="project-contributors">Contributors: {project.contributors?.length || 0}</div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="no-projects">No active projects found.</div>
+                    )}
+                  </div>
+                </div> */}
+
+
               </div>
             </>
           )}
 
           {activeTab === 'achievements' && <AchievementsPage />}
           {activeTab === 'projects' && <ProjectsPage projects={studentData.projects} />}
+          {activeTab === 'committees' && <CommitteesPage />}
 
 
           {["courses", "committees", "messages", "calendar"].includes(activeTab) && (
